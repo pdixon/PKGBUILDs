@@ -1,0 +1,34 @@
+# Maintainer: Phillip Dixon <phil@dixon.gen.nz>
+
+pkgname=can-utils-git
+_gitname=can-utils
+pkgver=193.16c970d
+pkgrel=1
+pkgdesc="Utils for working with Socket CAN"
+arch=('i686' 'x86_64')
+url="http://gitorious.org/linux-can/can-utils"
+license=('unknown')
+depends=('glibc')
+makedepends=('git')
+provides=('can-utils-git')
+# The git repo is detected by the 'git:' or 'git+' beginning. The branch
+# 'pacman41' is then checked out upon cloning, expediating versioning:
+source=('git+https://git.gitorious.org/linux-can/can-utils.git')
+# Because the sources are not static, skip Git checksum:
+md5sums=('SKIP')
+
+pkgver() {
+  cd $_gitname
+  # Use the tag of the last commit
+  echo $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+}
+
+build() {
+  cd $_gitname
+  make
+}
+
+package() {
+  cd $_gitname
+  make PREFIX=/usr DESTDIR="$pkgdir" install
+}
