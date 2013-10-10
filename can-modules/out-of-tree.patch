@@ -1,0 +1,48 @@
+diff -rNu linux-3.9.2.orig/drivers/net/can/Makefile linux-3.9.2/drivers/net/can/Makefile
+--- linux-3.9.2.orig/drivers/net/can/Makefile	2013-05-12 02:19:28.000000000 +1200
++++ linux-3.9.2/drivers/net/can/Makefile	2013-05-20 22:22:55.295926076 +1200
+@@ -27,3 +27,5 @@
+ obj-$(CONFIG_CAN_GRCAN)		+= grcan.o
+ 
+ ccflags-$(CONFIG_CAN_DEBUG_DEVICES) := -DDEBUG
++ccflags-$(CONFIG_CAN_DEV_SYSFS) 	+= -DCONFIG_CAN_DEV_SYSFS
++ccflags-$(CONFIG_CAN_CALC_BITTIMING) 	+= -DCONFIG_CAN_CALC_BITTIMING
+diff -rNu linux-3.9.2.orig/Makefile linux-3.9.2/Makefile
+--- linux-3.9.2.orig/Makefile	1970-01-01 12:00:00.000000000 +1200
++++ linux-3.9.2/Makefile	2013-05-20 22:14:02.488468805 +1200
+@@ -0,0 +1,35 @@
++ifeq ($(KERNELRELEASE),)
++
++KERNELDIR := /lib/modules/$(shell uname -r)/build
++PWD       := $(shell pwd)
++TOPDIR    := $(PWD)
++
++export CONFIG_CAN_VCAN=m
++export CONFIG_CAN_SLCAN=m
++export CONFIG_CAN_DEV=m
++export CONFIG_CAN_CALC_BITTIMING=y
++export CONFIG_CAN_DEV_SYSFS=y
++
++export CONFIG_CAN_EMS_USB=m
++export CONFIG_CAN_ESD_USB2=m
++export CONFIG_CAN_KVASER_USB=m
++export CONFIG_CAN_PEAK_USB=m
++export CONFIG_CAN_8DEV_USB=m
++
++export CONFIG_CAN=m
++export CONFIG_CAN_RAW=m
++export CONFIG_CAN_BCM=m
++export CONFIG_CAN_ISOTP=m
++
++modules modules_install clean:
++	$(MAKE) -C $(KERNELDIR) M=$(PWD) $@ TOPDIR=$(TOPDIR)
++
++else
++
++obj-m += drivers/net/can/
++obj-m += net/can/
++
++ccflags-$(CONFIG_CAN_DEV_SYSFS) 	+= -DCONFIG_CAN_DEV_SYSFS
++ccflags-$(CONFIG_CAN_CALC_BITTIMING) 	+= -DCONFIG_CAN_CALC_BITTIMING
++
++endif
