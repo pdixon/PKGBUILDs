@@ -1,0 +1,36 @@
+# Maintainer: Phillip Dixon <phil@dixon.gen.nz>
+pkgname=1pass-hg
+_hgname=1pass
+pkgver=r20.ca0e1747b708
+pkgrel=1
+pkgdesc=""
+arch=('i686' 'x86_64')
+url=""
+license=('zlib')
+depends=('gtk2')
+makedepends=('mercurial' 'cmake')
+provides=('1pass-hg')
+source=('hg+https://hg.icculus.org/icculus/1pass/')
+md5sums=('SKIP')
+
+pkgver() {
+  cd $_hgname
+  printf "r%s.%s" "$(hg identify -n)" "$(hg identify -i)"
+}
+
+build() {
+  cd $_hgname
+  cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo
+
+  make
+}
+
+package() {
+  cd $_hgname
+
+  make DESTDIR="$pkgdir/" install
+}
+
+# vim:set ts=2 sw=2 et:
