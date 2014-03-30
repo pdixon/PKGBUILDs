@@ -2,4 +2,4 @@ can-modules/linux-*
 can-utils-git/can-utils
 */src
 */pkg
-*.pkg.tar.xz
+*.tar.xz

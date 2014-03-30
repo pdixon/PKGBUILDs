@@ -1,0 +1,67 @@
+# Maintainer: Phillip Dixon <phil@dixon.gen.nz>
+pkgname=c720-modules
+pkgver=3.13.7
+pkgrel=1
+pkgdesc="Build patched modules to support acer c720."
+arch=('i686' 'x86_64')
+url="www.kernel.org"
+depends=('linux>=3.13' 'linux<3.14')
+makedepends=('linux-headers>=3.13' 'linux-headers<3.14')
+license=('GPL2')
+options=(!strip)
+install=c720-modules.install
+source=("https://kernel.org/pub/linux/kernel/v3.x/linux-${pkgver}.tar.xz"
+        '01-Add-Haswell-ULT-device-IDs.patch'
+        "02-Restructure-device-associations.patch"
+        "03-Use-deferred-probing.patch"
+        "04-fix-incorrect-placement-of-__initdata-tag.patch"
+        '05-Add-names-of-Haswell-ULT-i2c-busses.patch'
+        '06-Add-HP-Chromebook-14.patch'
+        '07-Add-Acer-C720.patch'
+       )
+md5sums=('445aa27da818617409982f42902a6e41'
+         'bb90cf3028f16c6bd4c7904fd52ce5b9'
+         '2bc5f26e417fa0b8d1f515d72cb3bb99'
+         '4bd85bd2491337fe743c40117688ed2c'
+         '2d0cd6cfb43d646bc8ddca2b0bb5df25'
+         '4bcc01c1566258852fc3c155403e119d'
+         'c2384f642b678168e9cfae62a1ff0536'
+         '18073a49be90beb2fb34cf7dd020425b')
+_archkernver=$(uname -r)
+
+prepare() {
+  cd linux-${pkgver}
+  patch -p1 -i "$srcdir/01-Add-Haswell-ULT-device-IDs.patch"
+  patch -p1 -i "$srcdir/02-Restructure-device-associations.patch"
+  patch -p1 -i "$srcdir/03-Use-deferred-probing.patch"
+  patch -p1 -i "$srcdir/04-fix-incorrect-placement-of-__initdata-tag.patch"
+  patch -p1 -i "$srcdir/05-Add-names-of-Haswell-ULT-i2c-busses.patch"
+  patch -p1 -i "$srcdir/06-Add-HP-Chromebook-14.patch"
+  patch -p1 -i "$srcdir/07-Add-Acer-C720.patch"
+
+  cp /usr/lib/modules/${_archkernver}/build/Module.symvers .
+
+  zcat /proc/config.gz > ./.config
+  make oldconfig
+
+  make prepare
+  make modules_prepare
+}
+
+build() {
+  cd linux-${pkgver}
+
+  make SUBDIRS=drivers/platform/chrome modules
+  make SUBDIRS=drivers/i2c/busses modules
+}
+
+package() {
+  install -D -m644 "${srcdir}/linux-$pkgver/drivers/i2c/busses/i2c-designware-core.ko" \
+          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/i2c-designware-core.ko"
+  install -D -m644 "${srcdir}/linux-$pkgver/drivers/i2c/busses/i2c-designware-pci.ko" \
+          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/i2c-designware-pci.ko"
+  install -D -m644 "$srcdir/linux-$pkgver/drivers/platform/chrome/chromeos_laptop.ko" \
+          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/chromeos_laptop.ko"
+  gzip "${pkgdir}/usr/lib/modules/${_archkernver}/updates/"*.ko
+  #sed -i -e "s/EXTRAMODULES='.*'/EXTRAMODULES='${_extramodules}'/" "${startdir}/c720-modules.install"
+}

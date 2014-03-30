@@ -1,0 +1,15 @@
+post_install() {
+    #EXTRAMODULES='extramodules-3.13-ARCH'
+    depmod
+    echo 'In order to use the c720 modules, reboot the system.'
+}
+
+post_upgrade() {
+    #EXTRAMODULES='extramodules-3.13-ARCH'
+    depmod
+}
+
+post_remove() {
+    #EXTRAMODULES='extramodules-3.13-ARCH'
+    depmod
+}
