@@ -1,0 +1,38 @@
+# Maintainer: Phillip Dixon <phil@dixon.gen.nz>
+pkgname=c720-config
+pkgver=1
+pkgrel=1
+pkgdesc=""
+arch=('i686' 'x86_64')
+url=""
+license=('GPL')
+source=(
+  modprobe-ath9k.conf
+  modprobe-i915.conf
+  modprobe-snd-intel.conf
+  sysctl-nm-watchdog.conf
+  sysctl-vm-writeback.conf
+  udev-pci-pm.rules
+  udev-sata-pm.rules
+  udev-usb-pm.rules)
+md5sums=('a1602f38ab48840858606d0d4d5104dd'
+         '7daf94da4f7a07d565a03137d47f9ab8'
+         'cb42db022873c55cefca316349f13f2b'
+         'a84082f22262438b0163dfa687dc944c'
+         '662d0196e7197e3085b345cffdfc7511'
+         '711cfd10ac858ff2587e238cb2fc94f5'
+         '5cb91530e18285d69fca38f00f808cf9'
+         '0e2d2ad8f662c6eeceb86b890fff5d01')
+
+package() {
+  install -D -m644 "${srcdir}/modprobe-ath9k.conf" "${pkgdir}/etc/modprobe.d/ath9k.conf"
+  install -D -m644 "${srcdir}/modprobe-i915.conf" "${pkgdir}/etc/modprobe.d/i195.conf"
+  install -D -m644 "${srcdir}/modprobe-snd-intel.conf" "${pkgdir}/etc/modprobe.d/snd-intel.conf"
+  install -D -m644 "${srcdir}/sysctl-nm-watchdog.conf" "${pkgdir}/etc/sysctl.d/nm-watchdog.conf"
+  install -D -m644 "${srcdir}/sysctl-vm-writeback.conf" "${pkgdir}/etc/sysctl.d/vm-writeback.conf"
+  install -D -m644 "${srcdir}/udev-pci-pm.rules" "${pkgdir}/etc/udev/rules.d/pci-pm.rules"
+  install -D -m644 "${srcdir}/udev-sata-pm.rules" "${pkgdir}/etc/udev/rules.d/sata-pm.rules"
+  install -D -m644 "${srcdir}/udev-usb-pm.rules" "${pkgdir}/etc/udev/rules.d/usb-pm.rules"
+}
+
+
