@@ -1,15 +1,14 @@
+KERNEL_VERSION='3.14.2-1-ARCH'
+
 post_install() {
-    #EXTRAMODULES='extramodules-3.13-ARCH'
-    depmod
+    depmod ${KERNEL_VERSION}
     echo 'In order to use the c720 modules, reboot the system.'
 }
 
 post_upgrade() {
-    #EXTRAMODULES='extramodules-3.13-ARCH'
-    depmod
+    depmod ${KERNEL_VERSION}
 }
 
-post_remove() {
-    #EXTRAMODULES='extramodules-3.13-ARCH'
-    depmod
-}
+#post_remove() {
+    #depmod ${KERNEL_VERSION}
+#}
