@@ -2,7 +2,7 @@
 pkgname=c720-modules
 _srcname=linux-3.14
 pkgver=3.14.2
-pkgrel=1
+pkgrel=2
 _archkernver=${pkgver}-1-ARCH
 pkgdesc="Build patched modules to support acer c720."
 arch=('i686' 'x86_64')
@@ -15,6 +15,7 @@ install=c720-modules.install
 
 source=("https://kernel.org/pub/linux/kernel/v3.x/${_srcname}.tar.xz"
         "https://kernel.org/pub/linux/kernel/v3.x/patch-${pkgver}.xz"
+        'revert-tpm.patch'
         '01-Add-Haswell-ULT-device-IDs.patch'
         '05-Add-names-of-Haswell-ULT-i2c-busses.patch'
         '06-Add-HP-Chromebook-14.patch'
@@ -22,6 +23,7 @@ source=("https://kernel.org/pub/linux/kernel/v3.x/${_srcname}.tar.xz"
        )
 md5sums=('b621207b3f6ecbb67db18b13258f8ea8'
          'f2239bf772d1b6e1c26cb03f6e056959'
+         '99fa4cba01207f7d2600138af99619b5'
          'bb90cf3028f16c6bd4c7904fd52ce5b9'
          '4bcc01c1566258852fc3c155403e119d'
          'c2384f642b678168e9cfae62a1ff0536'
@@ -32,6 +34,8 @@ prepare() {
 
   # add upstream patch
   patch -p1 -i "${srcdir}/patch-${pkgver}"
+
+  patch -p1 -i "${srcdir}/revert-tpm.patch"
 
   patch -p1 -i "$srcdir/01-Add-Haswell-ULT-device-IDs.patch"
   patch -p1 -i "$srcdir/05-Add-names-of-Haswell-ULT-i2c-busses.patch"
@@ -52,9 +56,16 @@ build() {
 
   make SUBDIRS=drivers/platform/chrome modules
   make SUBDIRS=drivers/i2c/busses modules
+  make SUBDIRS=drivers/char/tpm modules
 }
 
 package() {
+  install -D -m644 "${srcdir}/${_srcname}/drivers/char/tpm/tpm.ko" \
+          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/tpm.ko"
+  install -D -m644 "${srcdir}/${_srcname}/drivers/char/tpm/tpm_tis.ko" \
+          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/tpm_tis.ko"
+  install -D -m644 "${srcdir}/${_srcname}/drivers/char/tpm/tpm_infineon.ko" \
+          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/tpm_infineon.ko"
   install -D -m644 "${srcdir}/${_srcname}/drivers/i2c/busses/i2c-designware-core.ko" \
           "${pkgdir}/usr/lib/modules/${_archkernver}/updates/i2c-designware-core.ko"
   install -D -m644 "${srcdir}/${_srcname}/drivers/i2c/busses/i2c-designware-pci.ko" \
