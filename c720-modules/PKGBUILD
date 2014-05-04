@@ -2,7 +2,7 @@
 pkgname=c720-modules
 _srcname=linux-3.14
 pkgver=3.14.2
-pkgrel=2
+pkgrel=3
 _archkernver=${pkgver}-1-ARCH
 pkgdesc="Build patched modules to support acer c720."
 arch=('i686' 'x86_64')
@@ -27,7 +27,7 @@ md5sums=('b621207b3f6ecbb67db18b13258f8ea8'
          'bb90cf3028f16c6bd4c7904fd52ce5b9'
          '4bcc01c1566258852fc3c155403e119d'
          'c2384f642b678168e9cfae62a1ff0536'
-         '18073a49be90beb2fb34cf7dd020425b')
+         'b21a212dfb30f41f1d385786d7a3369f')
 
 prepare() {
   cd ${_srcname}
