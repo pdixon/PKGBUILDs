@@ -1,30 +1,32 @@
 # Maintainer: Phillip Dixon <phil@dixon.gen.nz>
 pkgname=c720-modules
-_srcname=linux-3.14.6
-pkgver=3.14.6
+_srcname=linux-3.15.1
+pkgver=3.15.1
 pkgrel=1
 _archkernver=${pkgver}-1-ARCH
 pkgdesc="Build patched modules to support acer c720."
 arch=('i686' 'x86_64')
 url="www.kernel.org"
-depends=('linux>=3.14' 'linux<3.15')
-makedepends=('linux-headers>=3.14' 'linux-headers<3.15')
+depends=('linux>=3.15' 'linux<3.16')
+makedepends=('linux-headers>=3.15' 'linux-headers<3.16')
 license=('GPL2')
 options=(!strip)
 install=c720-modules.install
 
 #"https://kernel.org/pub/linux/kernel/v3.x/patch-${pkgver}.xz"
 source=("https://kernel.org/pub/linux/kernel/v3.x/${_srcname}.tar.xz"
-        '01-Add-Haswell-ULT-device-IDs.patch'
+        'haswell-i2c.patch'
         '05-Add-names-of-Haswell-ULT-i2c-busses.patch'
         '06-Add-HP-Chromebook-14.patch'
         '07-Add-Acer-C720.patch'
+        'backlight-quirk.patch'
        )
-md5sums=('0916f216a1833acf8afb8da29488ac6f'
-         'bb90cf3028f16c6bd4c7904fd52ce5b9'
-         '4bcc01c1566258852fc3c155403e119d'
+md5sums=('72bd0bf0e773963217c89cddbf3e0048'
+         '897bd99ec83e3feb3d2cbd713f389927'
+         'd81602bb9401ef492955433bdd53f2e6'
          'c2384f642b678168e9cfae62a1ff0536'
-         'b21a212dfb30f41f1d385786d7a3369f')
+         'b21a212dfb30f41f1d385786d7a3369f'
+         'c5ab058ee0ddd27ecc3f5c70f9740f18')
 
 prepare() {
   cd ${_srcname}
@@ -34,10 +36,11 @@ prepare() {
   # patch -p1 -i "${srcdir}/patch-${pkgver}"
 
   echo "Apply our local patches."
-  patch -p1 -i "$srcdir/01-Add-Haswell-ULT-device-IDs.patch"
+  patch -p1 -i "$srcdir/haswell-i2c.patch"
   patch -p1 -i "$srcdir/05-Add-names-of-Haswell-ULT-i2c-busses.patch"
   patch -p1 -i "$srcdir/06-Add-HP-Chromebook-14.patch"
   patch -p1 -i "$srcdir/07-Add-Acer-C720.patch"
+  patch -p1 -i "$srcdir/backlight-quirk.patch"
 
   cp "/usr/lib/modules/${_archkernver}/build/Module.symvers" .
   cp "/usr/lib/modules/${_archkernver}/build/.config" .
@@ -53,22 +56,18 @@ build() {
 
   make SUBDIRS=drivers/platform/chrome modules
   make SUBDIRS=drivers/i2c/busses modules
-  make SUBDIRS=drivers/char/tpm modules
+  make SUBDIRS=drivers/gpu/drm/i915 modules
 }
 
 package() {
-  install -D -m644 "${srcdir}/${_srcname}/drivers/char/tpm/tpm.ko" \
-          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/tpm.ko"
-  install -D -m644 "${srcdir}/${_srcname}/drivers/char/tpm/tpm_tis.ko" \
-          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/tpm_tis.ko"
-  install -D -m644 "${srcdir}/${_srcname}/drivers/char/tpm/tpm_infineon.ko" \
-          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/tpm_infineon.ko"
   install -D -m644 "${srcdir}/${_srcname}/drivers/i2c/busses/i2c-designware-core.ko" \
           "${pkgdir}/usr/lib/modules/${_archkernver}/updates/i2c-designware-core.ko"
   install -D -m644 "${srcdir}/${_srcname}/drivers/i2c/busses/i2c-designware-pci.ko" \
           "${pkgdir}/usr/lib/modules/${_archkernver}/updates/i2c-designware-pci.ko"
   install -D -m644 "$srcdir/${_srcname}/drivers/platform/chrome/chromeos_laptop.ko" \
           "${pkgdir}/usr/lib/modules/${_archkernver}/updates/chromeos_laptop.ko"
+  install -D -m644 "${srcdir}/${_srcname}/drivers/gpu/drm/i915/i915.ko" \
+          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/i915.ko"
   gzip "${pkgdir}/usr/lib/modules/${_archkernver}/updates/"*.ko
   sed -i -e "s/KERNEL_VERSION=.*/KERNEL_VERSION='${_archkernver}'/" "${startdir}/c720-modules.install"
 }

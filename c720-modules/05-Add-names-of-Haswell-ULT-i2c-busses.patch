@@ -6,8 +6,8 @@ index 1c2747f..57ded03 100644
  	"SMBus I801 adapter",
  	"i915 gmbus vga",
  	"i915 gmbus panel",
-+	"i2c-designware-pci-0",
-+	"i2c-designware-pci-1",
++	"i2c-designware-pci",
++	"i2c-designware-pci",
  };
  
  /* Keep this enum consistent with i2c_adapter_names */
