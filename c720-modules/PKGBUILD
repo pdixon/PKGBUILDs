@@ -1,7 +1,7 @@
 # Maintainer: Phillip Dixon <phil@dixon.gen.nz>
 pkgname=c720-modules
-_srcname=linux-3.14
-pkgver=3.14.4
+_srcname=linux-3.14.6
+pkgver=3.14.6
 pkgrel=1
 _archkernver=${pkgver}-1-ARCH
 pkgdesc="Build patched modules to support acer c720."
@@ -13,17 +13,14 @@ license=('GPL2')
 options=(!strip)
 install=c720-modules.install
 
+#"https://kernel.org/pub/linux/kernel/v3.x/patch-${pkgver}.xz"
 source=("https://kernel.org/pub/linux/kernel/v3.x/${_srcname}.tar.xz"
-        "https://kernel.org/pub/linux/kernel/v3.x/patch-${pkgver}.xz"
-        'tpm-ppi.patch'
         '01-Add-Haswell-ULT-device-IDs.patch'
         '05-Add-names-of-Haswell-ULT-i2c-busses.patch'
         '06-Add-HP-Chromebook-14.patch'
         '07-Add-Acer-C720.patch'
        )
-md5sums=('b621207b3f6ecbb67db18b13258f8ea8'
-         '116f27cf17c3522716b6678b17516067'
-         '341c1a4ac7c9ecdc115bc40111cffc4d'
+md5sums=('0916f216a1833acf8afb8da29488ac6f'
          'bb90cf3028f16c6bd4c7904fd52ce5b9'
          '4bcc01c1566258852fc3c155403e119d'
          'c2384f642b678168e9cfae62a1ff0536'
@@ -33,10 +30,10 @@ prepare() {
   cd ${_srcname}
 
   # add upstream patch
-  patch -p1 -i "${srcdir}/patch-${pkgver}"
+  # echo "Apply linux point release patch."
+  # patch -p1 -i "${srcdir}/patch-${pkgver}"
 
-  patch -p1 -i "${srcdir}/tpm-ppi.patch"
-
+  echo "Apply our local patches."
   patch -p1 -i "$srcdir/01-Add-Haswell-ULT-device-IDs.patch"
   patch -p1 -i "$srcdir/05-Add-names-of-Haswell-ULT-i2c-busses.patch"
   patch -p1 -i "$srcdir/06-Add-HP-Chromebook-14.patch"
