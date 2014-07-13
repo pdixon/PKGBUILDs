@@ -1,4 +1,4 @@
-KERNEL_VERSION='3.15.4-1-ARCH'
+KERNEL_VERSION='3.15.5-1-ARCH'
 
 post_install() {
     depmod ${KERNEL_VERSION}
