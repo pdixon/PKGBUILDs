@@ -1,7 +1,7 @@
 # Maintainer: Phillip Dixon <phil@dixon.gen.nz>
 pkgname=c720-modules
-_srcname=linux-3.15.5
-pkgver=3.15.5
+_srcname=linux-3.15.8
+pkgver=3.15.8
 pkgrel=1
 _archkernver=${pkgver}-1-ARCH
 pkgdesc="Build patched modules to support acer c720."
@@ -19,14 +19,13 @@ source=("https://kernel.org/pub/linux/kernel/v3.x/${_srcname}.tar.xz"
         '05-Add-names-of-Haswell-ULT-i2c-busses.patch'
         '06-Add-HP-Chromebook-14.patch'
         '07-Add-Acer-C720.patch'
-        'backlight-quirk.patch'
        )
 md5sums=('abb4c4cea2452ef1d1cfed1c804d8b24'
          '897bd99ec83e3feb3d2cbd713f389927'
          'd81602bb9401ef492955433bdd53f2e6'
          'c2384f642b678168e9cfae62a1ff0536'
          'b21a212dfb30f41f1d385786d7a3369f'
-         'c5ab058ee0ddd27ecc3f5c70f9740f18')
+)
 
 prepare() {
   cd ${_srcname}
@@ -40,7 +39,6 @@ prepare() {
   patch -p1 -i "$srcdir/05-Add-names-of-Haswell-ULT-i2c-busses.patch"
   patch -p1 -i "$srcdir/06-Add-HP-Chromebook-14.patch"
   patch -p1 -i "$srcdir/07-Add-Acer-C720.patch"
-  patch -p1 -i "$srcdir/backlight-quirk.patch"
 
   cp "/usr/lib/modules/${_archkernver}/build/Module.symvers" .
   cp "/usr/lib/modules/${_archkernver}/build/.config" .
@@ -56,7 +54,6 @@ build() {
 
   make SUBDIRS=drivers/platform/chrome modules
   make SUBDIRS=drivers/i2c/busses modules
-  make SUBDIRS=drivers/gpu/drm/i915 modules
 }
 
 package() {
@@ -66,8 +63,6 @@ package() {
           "${pkgdir}/usr/lib/modules/${_archkernver}/updates/i2c-designware-pci.ko"
   install -D -m644 "$srcdir/${_srcname}/drivers/platform/chrome/chromeos_laptop.ko" \
           "${pkgdir}/usr/lib/modules/${_archkernver}/updates/chromeos_laptop.ko"
-  install -D -m644 "${srcdir}/${_srcname}/drivers/gpu/drm/i915/i915.ko" \
-          "${pkgdir}/usr/lib/modules/${_archkernver}/updates/i915.ko"
   gzip "${pkgdir}/usr/lib/modules/${_archkernver}/updates/"*.ko
   sed -i -e "s/KERNEL_VERSION=.*/KERNEL_VERSION='${_archkernver}'/" "${startdir}/c720-modules.install"
 }
