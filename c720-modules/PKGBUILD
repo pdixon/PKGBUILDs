@@ -1,7 +1,7 @@
 # Maintainer: Phillip Dixon <phil@dixon.gen.nz>
 pkgname=c720-modules
-_srcname=linux-3.16.1
-pkgver=3.16.1
+_srcname=linux-3.16
+pkgver=3.16.2
 pkgrel=1
 _archkernver=${pkgver}-1-ARCH
 pkgdesc="Build patched modules to support acer c720."
@@ -13,24 +13,24 @@ license=('GPL2')
 options=(!strip)
 install=c720-modules.install
 
-#"https://kernel.org/pub/linux/kernel/v3.x/patch-${pkgver}.xz"
 source=("https://kernel.org/pub/linux/kernel/v3.x/${_srcname}.tar.xz"
+        "https://kernel.org/pub/linux/kernel/v3.x/patch-${pkgver}.xz"
         '05-Add-names-of-Haswell-ULT-i2c-busses.patch'
         '06-Add-HP-Chromebook-14.patch'
         '07-Add-Acer-C720.patch'
        )
-md5sums=('abb4c4cea2452ef1d1cfed1c804d8b24'
+md5sums=('5c569ed649a0c9711879f333e90c5386'
+         '926e6e2ee0634ce53730701da749b040'
          'd81602bb9401ef492955433bdd53f2e6'
          'c2384f642b678168e9cfae62a1ff0536'
-         'b21a212dfb30f41f1d385786d7a3369f'
-)
+         'b21a212dfb30f41f1d385786d7a3369f')
 
 prepare() {
   cd ${_srcname}
 
   # add upstream patch
-  # echo "Apply linux point release patch."
-  # patch -p1 -i "${srcdir}/patch-${pkgver}"
+  echo "Apply linux point release patch."
+  patch -p1 -i "${srcdir}/patch-${pkgver}"
 
   echo "Apply our local patches."
   patch -p1 -i "$srcdir/05-Add-names-of-Haswell-ULT-i2c-busses.patch"
