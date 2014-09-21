@@ -2,7 +2,7 @@
 
 pkgname=can-utils-git
 _gitname=can-utils
-pkgver=193.16c970d
+pkgver=228.518faef
 pkgrel=1
 pkgdesc="Utils for working with Socket CAN"
 arch=('i686' 'x86_64')
