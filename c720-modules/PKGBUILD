@@ -1,7 +1,7 @@
 # Maintainer: Phillip Dixon <phil@dixon.gen.nz>
 pkgname=c720-modules
 _srcname=linux-3.16
-pkgver=3.16.2
+pkgver=3.16.3
 pkgrel=1
 _archkernver=${pkgver}-1-ARCH
 pkgdesc="Build patched modules to support acer c720."
@@ -20,7 +20,7 @@ source=("https://kernel.org/pub/linux/kernel/v3.x/${_srcname}.tar.xz"
         '07-Add-Acer-C720.patch'
        )
 md5sums=('5c569ed649a0c9711879f333e90c5386'
-         '926e6e2ee0634ce53730701da749b040'
+         '387a93e4833df73217c6b9b92153aa7c'
          'd81602bb9401ef492955433bdd53f2e6'
          'c2384f642b678168e9cfae62a1ff0536'
          'b21a212dfb30f41f1d385786d7a3369f')
