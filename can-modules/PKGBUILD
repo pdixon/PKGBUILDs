@@ -1,36 +1,48 @@
-# -*- mode: sh; sh-basic-offset: 2; -*-
 # Maintainer: Phillip Dixon <phil@dixon.gen.nz>
-pkgname='can-modules'
-pkgver=3.11.4
+pkgname=can-modules
+pkgver=3.16.3
 pkgrel=1
+_srcname=linux-3.16
+_archkernver=${pkgver}-1-ARCH
 license=('GPL2')
 url='www.kernel.org'
 arch=('x86_64')
-source=("ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-${pkgver}.tar.xz"
-  "out-of-tree.patch")
-noextract=("linux-${pkgver}.tar.xz")
-md5sums=('SKIP'
-  'SKIP') #generate with 'makepkg -g'
+source=("https://kernel.org/pub/linux/kernel/v3.x/${_srcname}.tar.xz"
+        "https://kernel.org/pub/linux/kernel/v3.x/patch-${pkgver}.xz"
+        'enable-can.patch')
+md5sums=('5c569ed649a0c9711879f333e90c5386'
+         '387a93e4833df73217c6b9b92153aa7c'
+         '895a87c36104f3ec70664b616d959bba')
 
 prepare() {
-  tar --extract --file=linux-${pkgver}.tar.xz "linux-${pkgver}/drivers/net/can" "linux-${pkgver}/net/can"
-  cd linux-${pkgver}
-  patch -p1 -i "$srcdir/out-of-tree.patch"
+  cd ${_srcname}
 
+  # add upstream patch
+  echo "Apply linux point release patch."
+  patch -p1 -i "${srcdir}/patch-${pkgver}"
+
+  cp "/usr/lib/modules/${_archkernver}/build/Module.symvers" .
+  cp "/usr/lib/modules/${_archkernver}/build/.config" .
+
+  make oldconfig
+
+  patch -i "${srcdir}/enable-can.patch"
+
+  make prepare
+  make modules_prepare
 }
 
 build() {
-  cd "$srcdir/linux-$pkgver"
-  #./configure --prefix=/usr
-  make modules
+  cd ${_srcname}
+
+  make SUBDIRS=net/can modules
+  make SUBDIRS=drivers/net/can modules
 }
 
 package() {
-  _kernver=${_kernver:-$(uname -r)}
-  _extramodules=$(readlink -f "/usr/lib/modules/${_kernver}/extramodules" || true)
-  _kernver=$(< "${_extramodules}/version")
-  cd "$srcdir/linux-$pkgver"
-  make INSTALL_MOD_PATH="${pkgdir}/${_extramodules%%/lib/*}" modules_install
-  #sed -i -e "s/EXTRAMODULES='.*'/EXTRAMODULES='${_extramodules}'/" "${startdir}/can-modules.install"
-  find "${pkgdir}" -name '*.ko' -exec gzip -9 {} \;
+  cd ${_srcname}
+
+  make INSTALL_MOD_PATH="${pkgdir}/usr/lib/modules/extramodules-3.16-ARCH/" SUBDIRS=net/can modules_install
+  make INSTALL_MOD_PATH="${pkgdir}/usr/lib/modules/extramodules-3.16-ARCH/" SUBDIRS=drivers/net/can modules_install
+
 }
