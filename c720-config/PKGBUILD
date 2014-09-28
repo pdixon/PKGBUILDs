@@ -1,6 +1,6 @@
 # Maintainer: Phillip Dixon <phil@dixon.gen.nz>
 pkgname=c720-config
-pkgver=8
+pkgver=9
 pkgrel=1
 pkgdesc=""
 arch=('i686' 'x86_64')
@@ -23,7 +23,7 @@ md5sums=('a1602f38ab48840858606d0d4d5104dd'
          '662d0196e7197e3085b345cffdfc7511'
          '711cfd10ac858ff2587e238cb2fc94f5'
          '5cb91530e18285d69fca38f00f808cf9'
-         '0e2d2ad8f662c6eeceb86b890fff5d01'
+         '3b76ef8b9410b6d5e7143b43cc321df8'
          '00aa35a33c4b281efb9d250f7779b14a')
 
 
@@ -33,9 +33,9 @@ package() {
   install -D -m644 "${srcdir}/modprobe-snd-intel.conf" "${pkgdir}/etc/modprobe.d/snd-intel.conf"
   install -D -m644 "${srcdir}/sysctl-nm-watchdog.conf" "${pkgdir}/etc/sysctl.d/nm-watchdog.conf"
   install -D -m644 "${srcdir}/sysctl-vm-writeback.conf" "${pkgdir}/etc/sysctl.d/vm-writeback.conf"
-  install -D -m644 "${srcdir}/udev-pci-pm.rules" "${pkgdir}/etc/udev/rules.d/pci-pm.rules"
-  install -D -m644 "${srcdir}/udev-sata-pm.rules" "${pkgdir}/etc/udev/rules.d/sata-pm.rules"
-  install -D -m644 "${srcdir}/udev-usb-pm.rules" "${pkgdir}/etc/udev/rules.d/usb-pm.rules"
+  install -D -m644 "${srcdir}/udev-pci-pm.rules" "${pkgdir}/etc/udev/rules.d/95-pci-pm.rules"
+  install -D -m644 "${srcdir}/udev-sata-pm.rules" "${pkgdir}/etc/udev/rules.d/95-sata-pm.rules"
+  install -D -m644 "${srcdir}/udev-usb-pm.rules" "${pkgdir}/etc/udev/rules.d/95-usb-pm.rules"
   install -D -m644 "${srcdir}/50-c720-touchpad.conf" "${pkgdir}/etc/X11/xorg.conf.d/50-c720-touchpad.config"
 }
 
