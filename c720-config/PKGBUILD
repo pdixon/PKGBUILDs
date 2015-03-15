@@ -1,6 +1,6 @@
 # Maintainer: Phillip Dixon <phil@dixon.gen.nz>
 pkgname=c720-config
-pkgver=11
+pkgver=12
 pkgrel=1
 pkgdesc=""
 arch=('i686' 'x86_64')
@@ -23,7 +23,7 @@ md5sums=('a1602f38ab48840858606d0d4d5104dd'
          '662d0196e7197e3085b345cffdfc7511'
          '711cfd10ac858ff2587e238cb2fc94f5'
          '5cb91530e18285d69fca38f00f808cf9'
-         '482f686f26b81ba879c0a2ab8dfa4ee6'
+         'ca1fe7b668fcfbc2fc565b8554face8f'
          '00aa35a33c4b281efb9d250f7779b14a')
 
 

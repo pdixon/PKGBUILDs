@@ -1,4 +1,5 @@
 ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"
-ACTION=="add", SUBSYSTEM=="usb", ATTR{bInterfaceClass}!="03", TEST=="power/autosuspend", ATTR{power/autosuspend}="2"
-ACTION=="add", SUBSYSTEM=="usb", ATTR{bInterfaceClass}=="03", TEST=="power/control", ATTR{power/control}="on"
-ACTION=="add", SUBSYSTEM=="usb", ATTR{bInterfaceClass}=="03", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+# Special case my wireless mouse. It takes for every to wake back up.
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idProduct}!="c50e", TEST=="power/autosuspend", ATTR{power/autosuspend}="2"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idProduct}=="c50e", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idProduct}=="c50e", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
